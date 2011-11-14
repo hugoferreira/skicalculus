@@ -31,6 +31,15 @@ sealed abstract class Term {
   def reduceList: List[Term] = reduceList(List(this))
   def simplify = reduceList.head
   def ∙(x: Term) = new ∙(this, x)
+
+  override def toString = this match {
+    case S => "S"
+    case K => "K"
+    case I => "I"
+    case x ∙ (k @ (y ∙ z)) => x + " ∙ (" + k + ")"
+    case x ∙ y => x + " ∙ " + y
+    case Var(x) => x.toString
+  }
 }
 
 object Term {
@@ -41,8 +50,8 @@ object Term {
   lazy val I = new I_()
 }
 
-case class S_() extends Term { override def toString = "S"}
-case class K_() extends Term { override def toString = "K"}
-case class I_() extends Term { override def toString = "I"}
-case class Var[T](s: T) extends Term { override def toString = s.toString }
-case class ∙(x: Term, y: Term) extends Term { override def toString = "(" + x + " ∙ " + y + ")" }
+case class S_() extends Term
+case class K_() extends Term
+case class I_() extends Term
+case class Var[T](s: T) extends Term
+case class ∙(x: Term, y: Term) extends Term
