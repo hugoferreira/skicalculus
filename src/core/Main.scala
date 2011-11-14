@@ -18,7 +18,7 @@ sealed abstract class Term {
     case I ∙ x => x
     case K ∙ x ∙ y => x
     case S ∙ x ∙ y ∙ z => x ∙ z ∙ (y ∙ z)
-    case ∙(x, y) => x.reduce ∙ y.reduce
+    case x ∙ y => x.reduce ∙ y.reduce
     case _ => this
   }
 
