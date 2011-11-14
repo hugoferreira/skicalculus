@@ -4,11 +4,9 @@ object Main extends App {
   import Term._
 
   val i = I ∙ I
-  val c = K ∙ I ∙ "a" ∙ "b"
-  println(c)
+  var c: Term = K ∙ I ∙ 1 ∙ 2
   println(c.reduce)
-  println(c.reduce.reduce)
-  println(c.reduce.reduce.reduce)
+  // println(c.reduceall)
 }
 
 sealed abstract class Term {
@@ -22,11 +20,20 @@ sealed abstract class Term {
     case _ => this
   }
 
+  /* def reduceall: Term = {
+    def rec(ts: List[_]): Term = ts match {
+      case t1 :: t2 :: _  if t1 == t2 => t1
+      case t :: _ => rec(t.reduce :: ts)
+    }
+
+    rec(List(this.reduce, this))
+  } */
+
   def ∙(x: Term) = new ∙(this, x)
 }
 
 object Term {
-  implicit def stringToVar(s: String): Var = Var(s)
+  implicit def AnyToVar[T](s: T): Var[T] = new Var(s)
 
   lazy val S = new S_()
   lazy val K = new K_()
@@ -36,5 +43,5 @@ object Term {
 case class S_() extends Term { override def toString = "S"}
 case class K_() extends Term { override def toString = "K"}
 case class I_() extends Term { override def toString = "I"}
-case class Var(s: String) extends Term { override def toString = s }
-case class ∙(x: Term, y: Term) extends Term { override def toString = "∙(" + x + ", " + y + ")" }
+case class Var[T](s: T) extends Term { override def toString = s.toString }
+case class ∙(x: Term, y: Term) extends Term { override def toString = "(" + x + " ∙ " + y + ")" }
