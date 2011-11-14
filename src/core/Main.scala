@@ -5,8 +5,7 @@ object Main extends App {
 
   val i = I ∙ I
   var c: Term = K ∙ I ∙ 1 ∙ 2
-  println(c.reduce)
-  // println(c.reduceall)
+  println(c.reduceall)
 }
 
 sealed abstract class Term {
@@ -20,14 +19,14 @@ sealed abstract class Term {
     case _ => this
   }
 
-  /* def reduceall: Term = {
-    def rec(ts: List[_]): Term = ts match {
+  def reduceall: Term = {
+    def rec(ts: List[Term]): Term = ts match {
       case t1 :: t2 :: _  if t1 == t2 => t1
       case t :: _ => rec(t.reduce :: ts)
     }
 
-    rec(List(this.reduce, this))
-  } */
+    rec(List(this))
+  }
 
   def ∙(x: Term) = new ∙(this, x)
 }
