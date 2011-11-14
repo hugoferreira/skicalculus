@@ -4,8 +4,11 @@ object Main extends App {
   import Term._
 
   val i = I ∙ I
-  var c: Term = K ∙ I ∙ 1 ∙ 2
-  println(c.reduceall)
+  val c = K ∙ I ∙ 1 ∙ 2
+  val f = S ∙ I ∙ I ∙ (S ∙ I ∙ I)  // fixpoint
+
+  c.reduceList.reverse foreach println
+  f.reduceList.reverse foreach println
 }
 
 sealed abstract class Term {
@@ -19,15 +22,14 @@ sealed abstract class Term {
     case _ => this
   }
 
-  def reduceall: Term = {
-    def rec(ts: List[Term]): Term = ts match {
-      case t1 :: t2 :: _  if t1 == t2 => t1
-      case t :: _ => rec(t.reduce :: ts)
-    }
-
-    rec(List(this))
+  def reduceList(ts: List[Term]): List[Term] = {
+    val r = ts.head.reduce
+    val newTs = r :: ts
+    if (ts contains r) newTs else reduceList(newTs)
   }
 
+  def reduceList: List[Term] = reduceList(List(this))
+  def simplify = reduceList.head
   def ∙(x: Term) = new ∙(this, x)
 }
 
