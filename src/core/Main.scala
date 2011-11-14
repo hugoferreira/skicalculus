@@ -36,7 +36,7 @@ sealed abstract class Term {
     case S => "S"
     case K => "K"
     case I => "I"
-    case x ∙ (k @ (y ∙ z)) => x + " ∙ (" + k + ")"
+    case x ∙ (k @ (_∙_)) => x + " ∙ (" + k + ")"
     case x ∙ y => x + " ∙ " + y
     case Var(x) => x.toString
   }
