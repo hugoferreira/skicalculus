@@ -14,6 +14,7 @@ object Main extends App {
   rev.reduceList.reverse foreach println
 
   println (3 ∈ List(1, 2, 3))
+  println ((3 ≠ 2) ∧ ⊥)
 }
 
 sealed abstract class Term {
