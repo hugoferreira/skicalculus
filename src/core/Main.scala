@@ -1,10 +1,10 @@
 package core
 
-import pimp._
-import Pimp._
+import scalaz._
+import Scalaz._
 
 object Main extends App {
-  import Term._
+  import τ._
 
   val i = I ∙ I
   val c = K ∙ I ∙ 1 ∙ 2
@@ -13,15 +13,15 @@ object Main extends App {
 
   rev.reduceList.reverse foreach println
 
-  println (3 ∈ List(1, 2, 3))
-  println (¬((3 ≠ 2) ∧ ⊥))
-  println(List(1, 2, 3).∀(_< 4))
+  println (1 :: 2 :: 3 :: Nil ∋ 3)
+  println ((3 ≠ 2) ∧ ⊥)
+  println(1 :: 2 :: 3 :: Nil ∀ (4 >))
 }
 
-sealed abstract class Term {
-  import Term._
+sealed abstract class τ {
+  import τ._
 
-  def reduce: Term = this match {
+  def reduce: τ = this match {
     case I ∙ x => x
     case K ∙ x ∙ y => x
     case S ∙ x ∙ y ∙ z => x ∙ z ∙ (y ∙ z)
@@ -29,15 +29,15 @@ sealed abstract class Term {
     case _ => this
   }
 
-  def reduceList(ts: List[Term]): List[Term] = {
+  def reduceList(ts: List[τ]): List[τ] = {
     val r = ts.head.reduce
     val newTs = r :: ts
-    if (r ∈ ts) newTs else reduceList(newTs)
+    if (ts ∋ r) newTs else reduceList(newTs)
   }
 
-  def reduceList: List[Term] = reduceList(List(this))
+  def reduceList: List[τ] = reduceList(List(this))
   def simplify = reduceList.head
-  def ∙(x: Term) = new ∙(this, x)
+  def ∙(x: τ) = new ∙(this, x)
 
   override def toString = this match {
     case S => "S"
@@ -49,7 +49,7 @@ sealed abstract class Term {
   }
 }
 
-object Term {
+object τ {
   implicit def AnyToVar[T](s: T): Var[T] = new Var(s)
 
   lazy val S = new S_()
@@ -57,8 +57,8 @@ object Term {
   lazy val I = new I_()
 }
 
-case class S_() extends Term
-case class K_() extends Term
-case class I_() extends Term
-case class Var[T](s: T) extends Term
-case class ∙(x: Term, y: Term) extends Term
+case class S_() extends τ
+case class K_() extends τ
+case class I_() extends τ
+case class Var[T](s: T) extends τ
+case class ∙(x: τ, y: τ) extends τ
