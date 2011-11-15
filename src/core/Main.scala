@@ -1,14 +1,19 @@
 package core
 
+import pimp._
+import Pimp._
+
 object Main extends App {
   import Term._
 
   val i = I ∙ I
   val c = K ∙ I ∙ 1 ∙ 2
   val f = S ∙ I ∙ I ∙ (S ∙ I ∙ I)  // fixpoint
+  val rev = S ∙ (K ∙ (S ∙ I)) ∙ K ∙ 1 ∙ 2
 
-  c.reduceList.reverse foreach println
-  f.reduceList.reverse foreach println
+  rev.reduceList.reverse foreach println
+
+  println (3 ∈ List(1, 2, 3))
 }
 
 sealed abstract class Term {
@@ -25,7 +30,7 @@ sealed abstract class Term {
   def reduceList(ts: List[Term]): List[Term] = {
     val r = ts.head.reduce
     val newTs = r :: ts
-    if (ts contains r) newTs else reduceList(newTs)
+    if (r ∈ ts) newTs else reduceList(newTs)
   }
 
   def reduceList: List[Term] = reduceList(List(this))
